@@ -5,7 +5,6 @@ import torch.nn.functional as F
 
 import fusion_strategy
 
-
 # Convolution operation
 class ConvLayer(torch.nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, is_last=False):
@@ -24,7 +23,6 @@ class ConvLayer(torch.nn.Module):
             out = F.relu(out, inplace=True)
             # out = self.dropout(out)
         return out
-
 
 # Dense convolution unit
 class DenseConv2d(torch.nn.Module):
@@ -76,27 +74,22 @@ class DenseFuse_net(nn.Module):
     def encoder(self, input):
         x1 = self.conv1(input)
         x_DB = self.DB1(x1)
-        return [x_DB]
-
-    # def fusion(self, en1, en2, strategy_type='addition'):
-    #     # addition
-    #     if strategy_type is 'attention_weight':
-    #         # attention weight
-    #         fusion_function = fusion_strategy.attention_fusion_weight
-    #     else:
-    #         fusion_function = fusion_strategy.addition_fusion
-    #
-    #     f_0 = fusion_function(en1[0], en2[0])
-    #     return [f_0]
+        return x_DB
 
     def fusion(self, en1, en2, strategy_type='addition'):
-        f_0 = (en1[0] + en2[0])/2
-        return [f_0]
+
+        if strategy_type == 'addition':
+            f_0 = fusion_strategy.addition_fusion(en1, en2)
+        elif strategy_type == 'attention':
+            f_0 = fusion_strategy.attention_fusion_weight(en1, en2)
+        else:
+            raise EOFError('There is no starategy type!')
+        return f_0
 
     def decoder(self, f_en):
-        x2 = self.conv2(f_en[0])
+        x2 = self.conv2(f_en)
         x3 = self.conv3(x2)
         x4 = self.conv4(x3)
         output = self.conv5(x4)
 
-        return [output]
+        return output
