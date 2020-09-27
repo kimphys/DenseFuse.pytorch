@@ -16,7 +16,7 @@ class args():
 	lr = 1e-4 #"learning rate, default is 0.001"	
 	resume = None # if you have, please put the path of the model like "./models/densefuse_gray.model"
 
-	strategy_type = 'addition'
-	test_save_dir = "results/"
+	strategy_type = "addition"
+	test_save_dir = "./results/"
 	test_img = "./img.txt"
 	test_ir = "./ir.txt"
