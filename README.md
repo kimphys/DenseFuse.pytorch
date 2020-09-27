@@ -16,7 +16,7 @@ This is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared an
 python train.py
 ```
 
-# To-Do lists
+# To-Do list
 * [ ] Train a model with COCO dataset 2014
 * [ ] Attach the results
 * [ ] Upload samples and pretrained models
