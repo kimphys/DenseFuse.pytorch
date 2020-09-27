@@ -11,6 +11,10 @@ This is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared an
 /home/kim/images/2.jpg
 /home/kim/images/3.jpg
 ```
+* Run the command below
+```
+python train.py
+```
 
 # Citation
 
