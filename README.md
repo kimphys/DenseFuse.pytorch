@@ -17,9 +17,9 @@ python train.py
 ```
 
 # To-Do lists
-[ ] Train a model with COCO dataset 2014
-[ ] Attach the results
-[ ] Upload samples and pretrained models
+* [ ] Train a model with COCO dataset 2014
+* [ ] Attach the results
+* [ ] Upload samples and pretrained models
 
 # Citation
 
