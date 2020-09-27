@@ -16,6 +16,11 @@ This is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared an
 python train.py
 ```
 
+# To-Do lists
+[ ] Train a model with COCO dataset 2014
+[ ] Attach the results
+[ ] Upload samples and pretrained models
+
 # Citation
 
  *H. Li, X. J. Wu, “DenseFuse: A Fusion Approach to Infrared and Visible Images,” IEEE Trans. Image Process., vol. 28, no. 5, pp. 2614–2623, May 2019.*
