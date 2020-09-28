@@ -3,10 +3,18 @@ class args():
 	# training args
 	epochs = 4 #"number of training epochs, default is 2"
 	save_per_epoch = 1
-	batch_size = 4 #"batch size for training, default is 4"
+	batch_size = 90 #"batch size for training, default is 4"
 	dataset = "./train.txt"
 	HEIGHT = 256
 	WIDTH = 256
+
+	# For GPU training
+	world_size = -1
+	rank = -1
+	dist_backend = 'nccl'
+	gpu = 0,1,2,3
+	multiprocessing_distributed = True
+	distributed = None
 
 	save_model_dir = "./models/" #"path to folder where trained model with checkpoints will be saved."
 
