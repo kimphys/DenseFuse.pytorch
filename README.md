@@ -5,6 +5,18 @@ This is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared an
 # How to train
 
 * Set your training phase at args_fusion.py
+* For multi-GPU training, you should set parameters as follows,
+```
+### args_fusion.py
+# For GPU training
+world_size = -1
+rank = -1
+dist_backend = 'nccl'
+gpu = 0,1,2,3
+multiprocessing_distributed = True
+distributed = None
+```
+You can see details of these parameters at [tutorials of PyTorch official documents](https://pytorch.org/tutorials/intermediate/dist_tuto.html#distributed-training). 
 * Make txt file which contains paths of training datas. For example,
 ```
 /home/kim/images/1.jpg
@@ -18,7 +30,7 @@ python train.py
 
 # To-Do list
 * [x] Support multi-GPU environments (I'm writing a manual...)
-* [ ] Train a model with COCO dataset 2014
+* [ ] Train a model with COCO dataset 2017
 * [ ] Attach the results
 * [ ] Upload samples and pretrained models
 

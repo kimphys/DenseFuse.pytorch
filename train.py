@@ -89,7 +89,8 @@ def main_worker(gpu, ngpus_per_node, args):
         epoch = checkpoint['epoch']
         loss = checkpoint['loss']
     else:
-        print("Training from scratch")
+        # print("Training from scratch")
+        pass
     
     img_path_file = args.dataset
     custom_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
@@ -101,7 +102,7 @@ def main_worker(gpu, ngpus_per_node, args):
 
         pbar = tqdm(trainloader)
 
-        for i, inputs in enumerate(pbar):
+        for inputs in pbar:
             
             if args.gpu is not None:
                 inputs = inputs.cuda(args.gpu, non_blocking=True)
