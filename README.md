@@ -17,6 +17,7 @@ python train.py
 ```
 
 # To-Do list
+* [x] Support multi-GPU environments (I'm writing a manual...)
 * [ ] Train a model with COCO dataset 2014
 * [ ] Attach the results
 * [ ] Upload samples and pretrained models
