@@ -37,8 +37,13 @@ def cleanup():
 
 def main():
     args.distributed = args.world_size > 1 or args.multiprocessing_distributed
-    ngpus_per_node = torch.cuda.device_count()
-    # ngpus_per_node = 1
+    
+    if not len(args.gpu) > torch.cuda.device_count():
+        ngpus_per_node = len(args.gpu)
+    else:
+        print("We will use all available GPUs")
+        ngpus_per_node = torch.cuda.device_count()
+    
     if args.multiprocessing_distributed:
         args.world_size = ngpus_per_node * args.world_size
         mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, args))
@@ -56,7 +61,7 @@ def main_worker(gpu, ngpus_per_node, args):
             args.rank = args.rank * ngpus_per_node + gpu
         dist.init_process_group(backend=args.dist_backend, world_size=args.world_size, rank=args.rank)
 
-    model = DenseFuse_net()
+    model = DenseFuse_net(input_nc=args.CHANNELS, output_nc=args.CHANNELS)
     optimizer = torch.optim.Adam(model.parameters(), args.lr)
 
     epoch = 0
@@ -94,12 +99,16 @@ def main_worker(gpu, ngpus_per_node, args):
         pass
     
     img_path_file = args.dataset
-    # custom_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
-    #                                        transforms.Resize((args.HEIGHT,args.WIDTH)),
-    #                                        transforms.ToTensor()])
-    
-    custom_transform = transforms.Compose([transforms.Resize((args.HEIGHT,args.WIDTH)),
-                                           transforms.ToTensor()])
+
+    assert args.CHANNELS == 1 or 3, "Input channels should be either 1 or 3"
+    if args.CHANNELS == 1:
+        custom_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
+                                            transforms.Resize((args.HEIGHT,args.WIDTH)),
+                                            transforms.ToTensor()])
+    elif args.CHANNELS == 3:
+        custom_transform = transforms.Compose([transforms.Resize((args.HEIGHT,args.WIDTH)),
+                                            transforms.ToTensor()])
+
     trainloader = DataLoader(MyTrainDataset(img_path_file, custom_transform=custom_transform), batch_size=args.batch_size, shuffle=False, num_workers=4)
 
     for ep in range(epoch, args.epochs):

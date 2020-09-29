@@ -7,6 +7,7 @@ class args():
 	dataset = "./train.txt"
 	HEIGHT = 256
 	WIDTH = 256
+	CHANNELS = 3 # grayscale: 1, RGB: 3
 	lr = 1e-4 #"learning rate, default is 0.001"	
 	# resume = "models/rgb.pt" # if you have, please put the path of the model like "./models/densefuse_gray.model"
 	resume = None
