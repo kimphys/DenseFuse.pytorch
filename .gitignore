@@ -1,0 +1,10 @@
+# Directories
+__pycache__/
+.idea/
+pytorch_msssim/__pycache__/
+
+# OS Files
+.DS_Store
+
+# Temp files
+._*
