@@ -1,9 +1,26 @@
 # Introduction
 
-This is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared and Visible Images](https://ieeexplore.ieee.org/document/8580578). You can see the original code in [here](https://github.com/hli1221/imagefusion_densefuse). I made their codes adaptive for the latest version of PyTorch(=1.6.0).
+This repository is a PyTorch implementation of [DenseFuse: A Fusion Approach to Infrared and Visible Images](https://ieeexplore.ieee.org/document/8580578). You can see the original code in [here](https://github.com/hli1221/imagefusion_densefuse). I made their codes adaptive for the latest version of PyTorch(=1.6.0).
+
+# Features
+
+This repository has several features as follows
+
+* PyTorch implementation
+* Multi-GPU training
+* Support training/testing both 1-channel and 3-channel model
+* You can run demo with MS COCO-based pretrained model (.pt file)
+
+# Prerequisites
+
+* PyTorch
+* tqdm
+* pillow
+* numpy
 
 # How to train
 
+* It is enough to download [MS COCO dataset](https://cocodataset.org/#home) for training.
 * Set your training phase at args_fusion.py
 * For multi-GPU training, you should set parameters as follows,
 ```
@@ -17,7 +34,13 @@ multiprocessing_distributed = True
 distributed = None
 ```
 You can see details of these parameters at [tutorials of PyTorch official documents](https://pytorch.org/tutorials/intermediate/dist_tuto.html#distributed-training). 
-* Make txt file which contains paths of training datas. For example,
+* If you have pretrained models, you can transfer the training to them.
+```
+### args_fusion.py
+# resume = "models/rgb.pt" # Transfer learning
+resume = None # Train from scratch
+```
+* Make train.txt file which contains paths of training datas. For example,
 ```
 /home/kim/images/1.jpg
 /home/kim/images/2.jpg
@@ -28,11 +51,21 @@ You can see details of these parameters at [tutorials of PyTorch official docume
 python train.py
 ```
 
+# How to test
+
+* Please add the path of datasets for test.
+```
+### args_fusion.py
+strategy_type = "attention" # addition or attention
+test_save_dir = "./"
+test_img = "./test_rgb.txt"
+test_ir = "./test_ir.txt"
+```
+* For testing, I recommand [KAIST Multispectral Pedestrian Detection Benchmark](https://soonminhwang.github.io/rgbt-ped-detection/).
+
 # To-Do list
-* [x] Support multi-GPU environments (I'm writing a manual...)
-* [x] Train a model with COCO dataset 2017
-* [x] Attach the results
-* [x] Upload samples and pretrained models
+* [ ] Make a demo for video sequences
+* [ ] Performance benchmark
 
 # Citation
 
