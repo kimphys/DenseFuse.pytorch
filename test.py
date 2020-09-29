@@ -10,6 +10,8 @@ from torch.utils.data import Dataset, DataLoader
 
 from tqdm import tqdm
 from PIL import Image
+import matplotlib.pyplot as plt
+import cv2
 
 from net import DenseFuse_net
 from args_fusion import args
@@ -28,13 +30,13 @@ class MyTestDataset(Dataset):
 
         self.img_list = img_list
         self.ir_list = ir_list
-        self.transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
+        self.transform = transforms.Compose([# transforms.Grayscale(num_output_channels=1),
                                              transforms.Resize((args.HEIGHT,args.WIDTH)),
                                              transforms.ToTensor()])
     
     def __getitem__(self, index):
-        img = Image.open(self.img_list[index])
-        ir = Image.open(self.ir_list[index])
+        img = Image.open(self.img_list[index]).convert('RGB')
+        ir = Image.open(self.ir_list[index]).convert('RGB')
 
         if self.transform:
             img = self.transform(img)
@@ -64,7 +66,9 @@ if __name__ == '__main__':
     for i, (img, ir) in enumerate(tqdm(testloader)):
 
         if is_cuda:
-            inputs = inputs.cuda()
+            img, ir = img.cuda(), ir.cuda()
+
+        add_img = (img + ir) / 2
 
         en_img = model.encoder(img)
         en_ir = model.encoder(ir)
@@ -77,7 +81,9 @@ if __name__ == '__main__':
             fused_img = fused_img.cpu()
         else:
             pass
-
-        save_image(fused_img[0],args.test_save_dir + 'result_{}.png'.format(i))
+        save_image(img[0],args.test_save_dir + '{}_visible.png'.format(i))
+        save_image(ir[0],args.test_save_dir + '{}_ir.png'.format(i))
+        save_image(fused_img[0],args.test_save_dir + '{}_densefuse.png'.format(i))
+        save_image(add_img[0],args.test_save_dir + '{}_add.png'.format(i))
 
     print('Finished testing')

@@ -38,6 +38,7 @@ def cleanup():
 def main():
     args.distributed = args.world_size > 1 or args.multiprocessing_distributed
     ngpus_per_node = torch.cuda.device_count()
+    # ngpus_per_node = 1
     if args.multiprocessing_distributed:
         args.world_size = ngpus_per_node * args.world_size
         mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, args))
@@ -93,16 +94,20 @@ def main_worker(gpu, ngpus_per_node, args):
         pass
     
     img_path_file = args.dataset
-    custom_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
-                                           transforms.Resize((args.HEIGHT,args.WIDTH)),
+    # custom_transform = transforms.Compose([transforms.Grayscale(num_output_channels=1),
+    #                                        transforms.Resize((args.HEIGHT,args.WIDTH)),
+    #                                        transforms.ToTensor()])
+    
+    custom_transform = transforms.Compose([transforms.Resize((args.HEIGHT,args.WIDTH)),
                                            transforms.ToTensor()])
-    trainloader = DataLoader(MyTrainDataset(img_path_file, custom_transform=custom_transform), batch_size=args.batch_size, shuffle=True, num_workers=1)
+    trainloader = DataLoader(MyTrainDataset(img_path_file, custom_transform=custom_transform), batch_size=args.batch_size, shuffle=False, num_workers=4)
 
     for ep in range(epoch, args.epochs):
 
         pbar = tqdm(trainloader)
 
         for inputs in pbar:
+        # for inputs in trainloader:
             
             if args.gpu is not None:
                 inputs = inputs.cuda(args.gpu, non_blocking=True)
@@ -112,19 +117,18 @@ def main_worker(gpu, ngpus_per_node, args):
             en = model.encoder(inputs)
             predicts = model.decoder(en)
 
-            loss = compute_loss(predicts, inputs, args.ssim_weight, w_idx=0)
+            loss = compute_loss(predicts, inputs, args.ssim_weight, w_idx=2)
             loss.backward()
             optimizer.step()
 
         if (ep + 1) % args.save_per_epoch == 0:
             # Save model
-            if not args.multiprocessing_distributed or (args.multiprocessing_distributed and args.rank % ngpus_per_node == 0):
-                torch.save({
-                            'epoch': ep,
-                            'model_state_dict': model.state_dict(),
-                            'optimizer_state_dict': optimizer.state_dict(),
-                            'loss': loss
-                        }, args.save_model_dir + 'ckpt_{}.pt'.format(ep))
+            torch.save({
+                        'epoch': ep,
+                        'model_state_dict': model.state_dict(),
+                        'optimizer_state_dict': optimizer.state_dict(),
+                        'loss': loss
+                    }, args.save_model_dir + 'ckpt_{}.pt'.format(ep))
 
     print('Finished training')
 
@@ -138,7 +142,7 @@ class MyTrainDataset(Dataset):
         self.transform = custom_transform
     
     def __getitem__(self, index):
-        img = Image.open(self.img_list[index])
+        img = Image.open(self.img_list[index]).convert('RGB')
 
         if self.transform:
             img = self.transform(img)
@@ -151,8 +155,7 @@ class MyTrainDataset(Dataset):
 
 def compute_loss(predicts, targets, weights, w_idx=0):
 
-    targets = Variable(targets.data.clone(), requires_grad=False)
-    
+    # targets = Variable(targets.data.clone(), requires_grad=False)
     mse = nn.MSELoss()
     ssim = pytorch_msssim.SSIM()
 
@@ -160,7 +163,6 @@ def compute_loss(predicts, targets, weights, w_idx=0):
     loss_ssim = 1 - ssim(predicts, targets)
 
     loss = loss_mse + weights[w_idx] * loss_ssim
-
     return loss
 
 if __name__ == "__main__":

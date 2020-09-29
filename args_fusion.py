@@ -4,11 +4,12 @@ class args():
 	epochs = 10 #"number of training epochs, default is 2"
 	save_per_epoch = 1
 	batch_size = 48 #"batch size for training, default is 4"
-	dataset = "/home/oem/shk/dataset/coco_train.txt"
+	dataset = "./train.txt"
 	HEIGHT = 256
 	WIDTH = 256
 	lr = 1e-4 #"learning rate, default is 0.001"	
-	resume = None # if you have, please put the path of the model like "./models/densefuse_gray.model"
+	# resume = "models/rgb.pt" # if you have, please put the path of the model like "./models/densefuse_gray.model"
+	resume = None
 	ssim_weight = [1,10,100,1000,10000]
 	save_model_dir = "./models/" #"path to folder where trained model with checkpoints will be saved."
 
@@ -21,7 +22,7 @@ class args():
 	distributed = None
 
 	# For testing
-	strategy_type = "addition"
-	test_save_dir = "./results/"
-	test_img = "./img.txt"
-	test_ir = "./ir.txt"
+	strategy_type = "attention"
+	test_save_dir = "./"
+	test_img = "./test_rgb.txt"
+	test_ir = "./test_ir.txt"

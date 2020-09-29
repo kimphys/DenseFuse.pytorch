@@ -41,7 +41,3 @@ def spatial_attention(tensor, spatial_type='sum'):
     elif spatial_type is 'sum':
         spatial = tensor.sum(dim=1, keepdim=True)
     return spatial
-
-
-
-

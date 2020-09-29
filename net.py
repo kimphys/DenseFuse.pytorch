@@ -54,7 +54,7 @@ class DenseBlock(torch.nn.Module):
 
 # DenseFuse network
 class DenseFuse_net(nn.Module):
-    def __init__(self, input_nc=1, output_nc=1):
+    def __init__(self, input_nc=3, output_nc=3):
         super(DenseFuse_net, self).__init__()
         denseblock = DenseBlock
         nb_filter = [16, 64, 32, 16]
