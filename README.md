@@ -30,9 +30,9 @@ python train.py
 
 # To-Do list
 * [x] Support multi-GPU environments (I'm writing a manual...)
-* [ ] Train a model with COCO dataset 2017
-* [ ] Attach the results
-* [ ] Upload samples and pretrained models
+* [x] Train a model with COCO dataset 2017
+* [x] Attach the results
+* [x] Upload samples and pretrained models
 
 # Citation
 
